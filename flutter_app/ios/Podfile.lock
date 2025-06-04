@@ -48,11 +48,14 @@ PODS:
   - Flutter (1.0.0)
   - iris_method_channel (0.0.1):
     - Flutter
+  - permission_handler_apple (9.3.0):
+    - Flutter
 
 DEPENDENCIES:
   - agora_rtc_engine (from `.symlinks/plugins/agora_rtc_engine/ios`)
   - Flutter (from `Flutter`)
   - iris_method_channel (from `.symlinks/plugins/iris_method_channel/ios`)
+  - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
 
 SPEC REPOS:
   trunk:
@@ -67,6 +70,8 @@ EXTERNAL SOURCES:
     :path: Flutter
   iris_method_channel:
     :path: ".symlinks/plugins/iris_method_channel/ios"
+  permission_handler_apple:
+    :path: ".symlinks/plugins/permission_handler_apple/ios"
 
 SPEC CHECKSUMS:
   agora_rtc_engine: 55723c1e997b9f1d423d4a07dd8d9ec437a1eb89
@@ -75,6 +80,7 @@ SPEC CHECKSUMS:
   AgoraRtcEngine_iOS: 97e2398a2addda9057815a2a583a658e36796ff6
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
   iris_method_channel: 0617c689164d8154c020c50f63ca79f92b8a7b9d
+  permission_handler_apple: 9878588469a2b0d0fc1e048d9f43605f92e6cec2
 
 PODFILE CHECKSUM: 4305caec6b40dde0ae97be1573c53de1882a07e5
 

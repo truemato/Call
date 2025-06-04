@@ -6,12 +6,12 @@ import 'agora_token_service.dart';
 class VideoCallPage extends StatefulWidget {
   final String channelName;
   final String appId;
-  
+
   const VideoCallPage({
-    Key? key,
+    super.key,
     required this.channelName,
     required this.appId,
-  }) : super(key: key);
+  });
 
   @override
   State<VideoCallPage> createState() => _VideoCallPageState();
@@ -48,7 +48,9 @@ class _VideoCallPageState extends State<VideoCallPage> {
       debugPrint('Generated UID: $_uid');
 
       // Get token from Firebase Functions
-      debugPrint('Fetching token for channel: ${widget.channelName}, uid: $_uid');
+      debugPrint(
+        'Fetching token for channel: ${widget.channelName}, uid: $_uid',
+      );
       final token = await AgoraTokenService.generateToken(
         channelName: widget.channelName,
         uid: _uid,
@@ -66,10 +68,12 @@ class _VideoCallPageState extends State<VideoCallPage> {
 
       // Create RTC engine
       _engine = createAgoraRtcEngine();
-      await _engine.initialize(RtcEngineContext(
-        appId: widget.appId,
-        channelProfile: ChannelProfileType.channelProfileCommunication,
-      ));
+      await _engine.initialize(
+        RtcEngineContext(
+          appId: widget.appId,
+          channelProfile: ChannelProfileType.channelProfileCommunication,
+        ),
+      );
 
       _engine.registerEventHandler(
         RtcEngineEventHandler(
@@ -86,15 +90,21 @@ class _VideoCallPageState extends State<VideoCallPage> {
               _remoteUid = remoteUid;
             });
           },
-          onUserOffline: (RtcConnection connection, int remoteUid,
-              UserOfflineReasonType reason) {
-            debugPrint("Remote user $remoteUid left channel");
-            setState(() {
-              _remoteUid = null;
-            });
-          },
+          onUserOffline:
+              (
+                RtcConnection connection,
+                int remoteUid,
+                UserOfflineReasonType reason,
+              ) {
+                debugPrint("Remote user $remoteUid left channel");
+                setState(() {
+                  _remoteUid = null;
+                });
+              },
           onTokenPrivilegeWillExpire: (RtcConnection connection, String token) {
-            debugPrint('[onTokenPrivilegeWillExpire] connection: ${connection.toJson()}, token: $token');
+            debugPrint(
+              '[onTokenPrivilegeWillExpire] connection: ${connection.toJson()}, token: $token',
+            );
           },
         ),
       );
@@ -175,56 +185,50 @@ class _VideoCallPageState extends State<VideoCallPage> {
               ),
             )
           : _errorMessage != null
-              ? Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(
-                        Icons.error_outline,
-                        color: Colors.red,
-                        size: 64,
-                      ),
-                      const SizedBox(height: 16),
-                      Text(
-                        _errorMessage!,
-                        style: const TextStyle(color: Colors.white, fontSize: 16),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 16),
-                      ElevatedButton(
-                        onPressed: () {
-                          initAgora();
-                        },
-                        child: const Text('Retry'),
-                      ),
-                    ],
+          ? Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.error_outline, color: Colors.red, size: 64),
+                  const SizedBox(height: 16),
+                  Text(
+                    _errorMessage!,
+                    style: const TextStyle(color: Colors.white, fontSize: 16),
+                    textAlign: TextAlign.center,
                   ),
-                )
-              : Stack(
-                  children: [
-                    Center(
-                      child: _remoteVideo(),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: () {
+                      initAgora();
+                    },
+                    child: const Text('Retry'),
+                  ),
+                ],
+              ),
+            )
+          : Stack(
+              children: [
+                Center(child: _remoteVideo()),
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: SizedBox(
+                    width: 100,
+                    height: 150,
+                    child: Center(
+                      child: _localUserJoined
+                          ? AgoraVideoView(
+                              controller: VideoViewController(
+                                rtcEngine: _engine,
+                                canvas: VideoCanvas(uid: _uid),
+                              ),
+                            )
+                          : const CircularProgressIndicator(),
                     ),
-                    Align(
-                      alignment: Alignment.topLeft,
-                      child: SizedBox(
-                        width: 100,
-                        height: 150,
-                        child: Center(
-                          child: _localUserJoined
-                              ? AgoraVideoView(
-                                  controller: VideoViewController(
-                                    rtcEngine: _engine,
-                                    canvas: VideoCanvas(uid: _uid),
-                                  ),
-                                )
-                              : const CircularProgressIndicator(),
-                        ),
-                      ),
-                    ),
-                    _toolbar(),
-                  ],
+                  ),
                 ),
+                _toolbar(),
+              ],
+            ),
     );
   }
 
